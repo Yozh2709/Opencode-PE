@@ -15,7 +15,7 @@
 
 Android 9 or newer on ARM64. Current version: **0.4.11-alpha**. The app still uses the display name Pocket OpenCode and package ID `dev.pocketopencode`.
 
-1. Build and install the APK using the instructions below.
+1. Download the ARM64 APK from [Releases](https://github.com/Yozh2709/Opencode-PE/releases), or build it using the instructions below. Public alpha APKs use the development signing key.
 2. Start with the embedded environment, or connect a compatible official Termux installation through **Settings → Runtime**. Termux needs its command permission and external-app access enabled; the setup screen guides you through this.
 3. Connect your provider in OpenCode, open a project, and start a chat.
 

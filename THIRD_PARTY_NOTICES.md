@@ -10,4 +10,4 @@ Opencode-PE (Pocket OpenCode) is an unofficial client and Android host for OpenC
 - AndroidX / Jetpack Compose — Apache-2.0; Kotlin / kotlinx.coroutines — Apache-2.0; OkHttp — Apache-2.0.
 - npm and its dependencies retain their included LICENSE files in the runtime assets.
 
-Before public redistribution, collect the corresponding source packages and all required notices for the exact native payloads in sources.json. No store publication or public binary distribution is performed by this project.
+Native payloads retain their upstream licenses. Corresponding source packages and required notices must accompany redistribution as required by each component's license. Exact package versions and download hashes are recorded in runtime.lock.json and the generated runtime/sources.json.
