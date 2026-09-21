@@ -2,8 +2,6 @@
 
 **OpenCode Pocket Edition** — an unofficial Android app that runs OpenCode on your phone, with the original web interface, a built-in command environment, and optional Termux integration. No PC or root required. AI providers still require an internet connection.
 
-[Русская документация](README.ru.md)
-
 ## Features
 
 - Original OpenCode interface for chats, models, providers, permissions, and settings.
