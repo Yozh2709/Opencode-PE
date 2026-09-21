@@ -1,0 +1,15 @@
+.gradle/
+.kotlin/
+**/build/
+local.properties
+app/src/main/jniLibs/
+app/src/main/assets/runtime/
+app/src/main/assets/web/
+*.jks
+*.keystore
+.runtime-cache/
+.env
+.env.*
+*.apk
+*.aab
+*.log

@@ -1,0 +1,98 @@
+/* Keep upstream prompt controls inside the composer on narrow Android screens. */
+@media (max-width: 640px) {
+  .settings-v2-dialog .settings-v2 {
+    /* Upstream settings CSS is lazy-loaded after this Android stylesheet. */
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+  }
+  .settings-v2-dialog .settings-v2 > [role="tablist"] {
+    flex: 0 0 auto !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    align-content: flex-start !important;
+    gap: 4px !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: 35% !important;
+    padding: 8px !important;
+    border-right: 0 !important;
+    border-bottom: 1px solid var(--v2-border-base, #333) !important;
+  }
+  .settings-v2-dialog [role="tablist"] div:not([data-slot]):not([data-component]) {
+    display: contents;
+  }
+  .settings-v2-dialog [role="tablist"] [data-slot="tabs-v2-section-title"],
+  .settings-v2-dialog [role="tablist"] .settings-v2-nav-footer {
+    display: none !important;
+  }
+  .settings-v2-dialog [role="tablist"] [data-slot="tabs-v2-trigger-wrapper"] {
+    width: fit-content !important;
+    min-width: 0 !important;
+    flex: 0 0 auto;
+  }
+  .settings-v2-dialog [role="tab"] { min-height: 36px; width: auto !important; }
+  .settings-v2-dialog .settings-v2-panel {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    height: auto !important;
+    flex: 1 1 0% !important;
+    overflow: auto !important;
+  }
+  .settings-v2-dialog .settings-v2-tab-header { padding: 16px; }
+  .settings-v2-dialog .settings-v2-tab-body { padding: 0 16px 24px; }
+  .settings-v2-dialog [data-component="settings-v2-list"] { padding-inline: 12px; }
+  .settings-v2-dialog [data-slot="settings-v2-row-copy"],
+  .settings-v2-dialog [data-slot="settings-v2-row-control"] {
+    min-width: 0;
+    max-width: 100%;
+  }
+  [data-component="prompt-input-v2"] > div:has([data-action="prompt-submit"]) {
+    height: auto;
+    min-height: 44px;
+    padding-block: 8px;
+    align-items: flex-end;
+    gap: 8px;
+  }
+  [data-component="prompt-input-v2"] > div:has([data-action="prompt-submit"]) > div:not([data-component="tooltip-v2-trigger"]) {
+    flex-wrap: wrap;
+    min-width: 0;
+    row-gap: 4px;
+  }
+  [data-component="prompt-input-v2"] > div:has([data-action="prompt-submit"]) > div:not([data-component="tooltip-v2-trigger"]) > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+  [data-component="prompt-input-v2"] [data-component="tooltip-v2-trigger"] > button {
+    max-width: 100%;
+    min-width: 0;
+  }
+  [data-component="prompt-input-v2"] > div > [data-component="tooltip-v2-trigger"]:has([data-action="prompt-submit"]),
+  [data-component="prompt-input-v2"] [data-action="prompt-submit"] {
+    flex-shrink: 0;
+  }
+}
+
+/* Android additions use the same surface, type and button tokens as OpenCode. */
+[data-component="pocket-settings-links"] { display: flex; flex-wrap: wrap; gap: 4px; width: 100%; }
+.settings-v2 .pocket-settings-link { width: auto !important; height: 36px !important; min-height: 36px; cursor: pointer; }
+[data-component="pocket-settings-links"] [data-slot="tabs-v2-trigger-wrapper"] { min-height: 36px; }
+.pocket-settings-link [data-slot="tabs-v2-trigger-content"] { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+#pocket-permission {
+  border: 1px solid var(--border-weak-base, #383838); border-radius: 12px;
+  background: var(--surface-raised-stronger-non-alpha, #202020); color: var(--text-base, #ddd);
+  font-family: var(--font-family-sans, sans-serif); max-height: 45dvh;
+  overflow: hidden; margin: 4px 0; min-width: 0;
+}
+#pocket-permission [data-slot="permission-body"] { padding: 14px 14px 0; gap: 10px; overflow: auto; }
+#pocket-permission [data-slot="permission-header-title"] { font-size: 14px; font-weight: 500; }
+#pocket-permission [data-slot="permission-patterns"] { max-height: 24dvh; overflow: auto; margin: 8px 0 12px; gap: 6px; display: flex; flex-direction: column; }
+#pocket-permission code { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 12px; font-family: var(--font-family-mono, monospace); }
+#pocket-permission [data-slot="permission-footer"] { margin: 0; padding: 8px; display: flex; justify-content: flex-end; }
+#pocket-permission [data-slot="permission-footer-actions"] { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+#pocket-permission button { font-family: inherit; font-size: 12px; min-height: 36px; padding: 8px 10px; border-radius: 6px; cursor: pointer; }
+#pocket-permission button:disabled { opacity: .5; cursor: wait; }
+#pocket-permission.pocket-floating-dock { position: fixed; bottom: 8px; left: 8px; right: 8px; z-index: 30; }
