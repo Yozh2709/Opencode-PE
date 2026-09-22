@@ -32,6 +32,16 @@ node scripts/prepare-runtime.mjs C:/path/to/runtime-cache
 
 The APK is written to `app/build/outputs/apk/debug/app-debug.apk`. Runtime archives and native libraries are downloaded and verified using `runtime.lock.json`; generated payloads and local signing keys are excluded from Git.
 
+## Automated releases
+
+The **Android release** GitHub Actions workflow builds the APK on GitHub when a version tag is pushed. It runs JVM tests and Android lint, verifies the signing certificate, then publishes the APK, SHA-256 checksum, runtime manifest, and third-party notices. The release remains a draft until every file has uploaded.
+
+To publish an update, increase `versionCode` and set `versionName` in `app/build.gradle.kts`, commit the changes, and push a matching tag (for example, `v0.4.12-alpha` for `0.4.12-alpha`). Tags containing a prerelease suffix produce a prerelease. Existing published releases are never overwritten.
+
+For a build without publishing, open **Actions → Android release → Run workflow** on `main`. The resulting APK is available as a workflow artifact for 14 days.
+
+The repository secret `ANDROID_ALPHA_KEYSTORE_BASE64` holds the existing alpha keystore. It preserves update compatibility with previous alpha APKs and is never committed or included in artifacts. Forks must supply their own signing setup and update the expected certificate fingerprint; separately signed builds cannot replace existing installations.
+
 ## Current limitations
 
 This is an alpha. Android may stop background processes. Embedded tools are subject to Android execution restrictions: desktop binaries, arbitrary native Python extensions, Docker, and full desktop build toolchains are not generally supported. Termux offers a broader package environment, but does not make every desktop dependency compatible.
