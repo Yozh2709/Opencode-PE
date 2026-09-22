@@ -13,7 +13,7 @@
 
 ## Requirements and setup
 
-Android 9 or newer on ARM64. Current version: **0.4.13-alpha**. The installed app is named **Opencode**, with the original OpenCode icon. The repository remains **Opencode-PE** and the package ID remains `dev.pocketopencode` for update compatibility.
+Android 9 or newer on ARM64. Current version: **0.4.14-alpha**. The installed app is named **Opencode**, with the original OpenCode icon. The repository remains **Opencode-PE** and the package ID remains `dev.pocketopencode` for update compatibility.
 
 1. Download the ARM64 APK from [Releases](https://github.com/Yozh2709/Opencode-PE/releases), or build it using the instructions below. Public alpha APKs use the development signing key.
 2. Start with the embedded environment, or connect a compatible official Termux installation through **Settings → Runtime**. Termux needs its command permission and external-app access enabled; the setup screen guides you through this.
@@ -23,7 +23,7 @@ Embedded and Termux modes keep separate projects, credentials, and chat historie
 
 ### App updates
 
-Open **Settings → Updates**, or use **Updates** on the native Runtime screen if the core cannot start. The app checks this repository's published GitHub releases, including alpha versions, and offers newer ARM64 APKs. Automatic launch checks run at most once per day and can be disabled on that screen. Automatic failures stay silent; manual checks show an error and can be retried. Downloads open in your browser, and Android asks you to install the APK. Install over the existing app to retain data.
+Open **Settings → Updates**, or use **Updates** on the native Runtime screen if the core cannot start. The app checks this repository's published GitHub releases, including alpha versions, and offers newer ARM64 APKs. Automatic launch checks run at most once per day and can be disabled on that screen. Automatic failures stay silent; manual checks show an error and can be retried. A blue arrow in the chat header indicates an available update. APKs download inside the app with a percentage and downloaded size; downloads continue in the background. After download, tap Install update and confirm the Android installer. On first use, Android may ask you to allow installation from Opencode. APK size, available SHA-256 checksum, package, version and signing certificate are checked before installation. Updates download the complete APK. Install over the existing app to retain data.
 
 ## Build on Windows
 

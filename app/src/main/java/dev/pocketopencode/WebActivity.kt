@@ -69,6 +69,18 @@ class MainActivity : ComponentActivity() {
             setOnClickListener { web.evaluateJavascript("window.pocketMobile?.openSettings()",null) }
         }
         bar.addView(settingsButton,LinearLayout.LayoutParams(44.dp(),44.dp()))
+        val updateButton=ImageButton(this).apply {
+            setImageResource(R.drawable.ic_update); setPadding(11.dp(),11.dp(),11.dp(),11.dp())
+            contentDescription=tr(UiText.Updates); visibility=View.GONE
+            setBackgroundColor(Color.TRANSPARENT)
+            setOnClickListener { openNative(UpdatesActivity::class.java) }
+        }
+        bar.addView(updateButton,LinearLayout.LayoutParams(44.dp(),44.dp()))
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                while(isActive) { updateButton.visibility=if(AppUpdates.available(this@MainActivity)) View.VISIBLE else View.GONE; delay(1000) }
+            }
+        }
         layout.addView(bar)
         web=WebView(this).apply {
             setBackgroundColor(Color.rgb(24,24,24))

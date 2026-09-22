@@ -74,3 +74,10 @@ Early builds were debug-signed APKs for manual installation. Native extensions, 
 - Replaced the system-font settings glyph with OpenCode's settings-gear vector at 22dp inside a 44dp touch target.
 - Runtime and Files & Android use upstream terminal/folder icons and settings navigation styles, grouped in one row on phone-sized screens.
 - APK build passed (work/settings-icons-final-build.log). No device interaction/regression tests run; user is handling verification.
+
+## 0.4.14 — 2026-09-22
+
+- Added in-app APK downloads through Android DownloadManager, visible percentage and size, cancellation/retry, and persisted download recovery. Available updates appear as a blue arrow in the chat header.
+- Installation uses Android's installer and a private FileProvider URI after checking APK size, available GitHub SHA-256 digest, package ID, newer version and matching signing certificate.
+- APK build, 13 JVM tests and Android lint passed. UpdateDownloadTest passed on realme C75: real DownloadManager transfer from a local fixture, progress completion, controller recreation, invalid APK rejection and cancellation cleanup. No model calls.
+- Installed the same-signed 0.4.14-alpha APK over the existing app. End-to-end installation of a future production release through the new UI remains to be verified when one is available.

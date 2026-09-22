@@ -39,12 +39,19 @@ internal data class AppVersion(val numbers: List<Long>, val suffix: List<String>
     }
 }
 
-internal data class AppRelease(val version: String, val apk: String)
+internal data class AppRelease(val version: String, val apk: String, val size: Long = 0, val digest: String = "")
 
 internal object AppUpdates {
     private const val REPO="https://github.com/Yozh2709/Opencode-PE"
     private val client=OkHttpClient.Builder().callTimeout(20,TimeUnit.SECONDS).build()
     fun preferences(context: Context)=context.getSharedPreferences("app-updates",Context.MODE_PRIVATE)
+    fun remember(context: Context, release: AppRelease?) {
+        preferences(context).edit().putString("available", release?.version).apply()
+    }
+    fun available(context: Context): Boolean {
+        val version=AppVersion.parse(preferences(context).getString("available", "").orEmpty()) ?: return false
+        return version > requireNotNull(AppVersion.parse(BuildConfig.VERSION_NAME))
+    }
 
     // /latest excludes prereleases; this app currently ships alpha releases.
     suspend fun check(): AppRelease? = withContext(Dispatchers.IO) {
@@ -70,18 +77,20 @@ internal object AppUpdates {
                     it.optString("state")=="uploaded" && it.optLong("size")>0 &&
                     it.optString("browser_download_url").startsWith("$REPO/releases/download/$tag/")
             } ?: return@mapNotNull null
-            version to AppRelease(tag.removePrefix("v"),asset.getString("browser_download_url"))
+            version to AppRelease(tag.removePrefix("v"),asset.getString("browser_download_url"),asset.getLong("size"),asset.optString("digest").takeIf { it.startsWith("sha256:") }.orEmpty())
         }.maxByOrNull { it.first }?.second
     }
     fun download(context: Context, release: AppRelease) {
-        context.startActivity(Intent(Intent.ACTION_VIEW,Uri.parse(release.apk)))
+        context.startActivity(Intent(context,UpdatesActivity::class.java))
     }
     suspend fun automatic(activity: ComponentActivity) {
         val prefs=preferences(activity); val now=System.currentTimeMillis()
         val elapsed=now-prefs.getLong("last-check",0)
         if(!prefs.getBoolean("automatic",true) || elapsed in 0 until TimeUnit.DAYS.toMillis(1)) return
         prefs.edit().putLong("last-check",now).apply()
-        val release=try { check() } catch(e: CancellationException) { throw e } catch(_: Exception) { return } ?: return
+        val release=try { check() } catch(e: CancellationException) { throw e } catch(_: Exception) { return }
+        remember(activity,release)
+        if(release==null) return
         if(activity.isFinishing || activity.isDestroyed || !activity.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) return
         if(prefs.getString("notified",null)==release.version) return
         prefs.edit().putString("notified",release.version).apply()

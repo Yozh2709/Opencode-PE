@@ -25,4 +25,10 @@ class AppUpdatesTest {
         assertNull(AppUpdates.selectRelease("[${release("v0.4.14-alpha",host="https://example.com")}]","0.4.13-alpha"))
         assertNull(AppUpdates.selectRelease("[{\"tag_name\":\"v0.4.14-alpha\",\"assets\":[]}]","0.4.13-alpha"))
     }
+    @Test fun carriesIntegrityMetadataFromSelectedAsset() {
+        val entry=release("v0.4.14-alpha").replace("\"size\":100", "\"size\":214000000,\"digest\":\"sha256:abc123\"")
+        val selected=requireNotNull(AppUpdates.selectRelease("[$entry]","0.4.13-alpha"))
+        assertEquals(214000000L,selected.size)
+        assertEquals("sha256:abc123",selected.digest)
+    }
 }
