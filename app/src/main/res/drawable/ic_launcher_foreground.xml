@@ -1,0 +1,7 @@
+<!-- Original OpenCode favicon, scaled to Android's adaptive-icon safe zone. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="108dp" android:height="108dp" android:viewportWidth="512" android:viewportHeight="512">
+    <group android:pivotX="256" android:pivotY="256" android:scaleX="0.8" android:scaleY="0.8">
+        <path android:fillColor="#5A5858" android:pathData="M320,224V352H192V224H320Z" />
+        <path android:fillColor="#FFFFFF" android:fillType="evenOdd" android:pathData="M384,416H128V96H384V416ZM320,160H192V352H320V160Z" />
+    </group>
+</vector>

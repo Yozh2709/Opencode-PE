@@ -54,7 +54,7 @@ object TermuxBridge {
                 .putExtra("com.termux.RUN_COMMAND_ARGUMENTS",arrayOf("-c",command))
                 .putExtra("com.termux.RUN_COMMAND_WORKDIR",directory)
                 .putExtra("com.termux.RUN_COMMAND_BACKGROUND",true)
-                .putExtra("com.termux.RUN_COMMAND_COMMAND_LABEL","Pocket OpenCode")
+                .putExtra("com.termux.RUN_COMMAND_COMMAND_LABEL","Opencode")
                 .putExtra("com.termux.RUN_COMMAND_PENDING_INTENT",pending)
             check(context.startService(intent) != null) { tr(UiText.TermuxServiceFailed) }
             val bundle = withTimeout(timeoutMs) { result.await() }

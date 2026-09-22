@@ -44,6 +44,7 @@ class MainActivity : ComponentActivity() {
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        lifecycleScope.launch { delay(3000); AppUpdates.automatic(this@MainActivity) }
         val engine=Engine.get(this)
         val layout=LinearLayout(this).apply { orientation=LinearLayout.VERTICAL; setBackgroundColor(Color.rgb(24,24,24)) }
         layout.setOnApplyWindowInsetsListener { v, insets ->
@@ -107,6 +108,7 @@ class MainActivity : ComponentActivity() {
                         when(uri.path) {
                             "/__pocket/runtime" -> openNative(EnvironmentActivity::class.java)
                             "/__pocket/android" -> openNative(ToolsActivity::class.java)
+                            "/__pocket/updates" -> openNative(UpdatesActivity::class.java)
                             "/__pocket/permission" -> permissionReply?.invoke(uri.getQueryParameter("id").orEmpty(),uri.getQueryParameter("reply").orEmpty())
                         }
                         return true

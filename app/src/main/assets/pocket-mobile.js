@@ -69,7 +69,7 @@
     const nav=document.querySelector('.settings-v2 > [role="tablist"]');
     if(!nav || nav.querySelector('[data-pocket-settings]'))return;
     const group=document.createElement('section'); group.dataset.component='pocket-settings-links';
-    for(const [name,label,icon] of [['runtime',t('Runtime','Среда'),'terminal'],['android',t('Files & Android','Файлы и Android'),'folder']]) {
+    for(const [name,label,icon] of [['runtime',t('Runtime','Среда'),'terminal'],['android',t('Files & Android','Файлы и Android'),'folder'],['updates',t('Updates','Обновления'),'download']]) {
       const button=document.createElement('button'); button.type='button'; button.dataset.pocketSettings=name;
       button.dataset.slot='tabs-v2-trigger'; button.className='pocket-settings-link';
       const content=document.createElement('span'); content.dataset.slot='tabs-v2-trigger-content';

@@ -25,7 +25,7 @@ class EngineService : Service() {
         getSystemService(NotificationManager::class.java).createNotificationChannel(NotificationChannel("engine",tr(UiText.LocalOpenCode),NotificationManager.IMPORTANCE_LOW))
         val open = PendingIntent.getActivity(this,0,Intent(this,MainActivity::class.java),PendingIntent.FLAG_IMMUTABLE)
         val stop = PendingIntent.getService(this,1,Intent(this,EngineService::class.java).setAction("stop"),PendingIntent.FLAG_IMMUTABLE)
-        return Notification.Builder(this,"engine").setContentTitle("Pocket OpenCode")
+        return Notification.Builder(this,"engine").setContentTitle("Opencode")
             .setContentText(tr(UiText.EnvironmentRunning)).setSmallIcon(R.drawable.ic_launcher).setContentIntent(open)
             .addAction(Notification.Action.Builder(null,tr(UiText.Stop),stop).build()).setOngoing(true).build()
     }

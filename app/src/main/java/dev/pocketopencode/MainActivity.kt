@@ -57,7 +57,7 @@ class ToolsActivity:ComponentActivity() {
     LaunchedEffect(Unit){if(Build.VERSION.SDK_INT>=33)notification.launch(Manifest.permission.POST_NOTIFICATIONS)}
     val tabs=listOf(tr(UiText.Files) to Icons.Outlined.Folder,tr(UiText.Environment) to Icons.Outlined.Terminal)
     Scaffold(
-        topBar={Column {TopAppBar(title={Column{Text("Pocket OpenCode",fontWeight=FontWeight.Bold,fontSize=17.sp,maxLines=1);Text(engine.phase,fontSize=10.sp,maxLines=1,color=if(engine.ready)Mint else MaterialTheme.colorScheme.secondary)}},actions={
+        topBar={Column {TopAppBar(title={Column{Text("Opencode",fontWeight=FontWeight.Bold,fontSize=17.sp,maxLines=1);Text(engine.phase,fontSize=10.sp,maxLines=1,color=if(engine.ready)Mint else MaterialTheme.colorScheme.secondary)}},actions={
             Box {TextButton(onClick={projectMenu=true}){Text(state.project.ifBlank{tr(UiText.Projects)}.take(12),fontSize=12.sp,maxLines=1);Icon(Icons.Outlined.ExpandMore,null)}
                 DropdownMenu(projectMenu,{projectMenu=false}){
                     state.projects.forEach{p->DropdownMenuItem(text={Text(p)},onClick={projectMenu=false;vm.selectProject(p)})}

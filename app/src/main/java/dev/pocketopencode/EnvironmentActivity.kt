@@ -31,11 +31,12 @@ class EnvironmentActivity: ComponentActivity() {
         fun label(text: String) = TextView(this).apply { this.text=text; setTextColor(Color.LTGRAY); textSize=16f; setPadding(0,16,0,16) }.also { content.addView(it) }
         fun button(text: String, click: () -> Unit) { content.addView(Button(this).apply { this.text=text; setOnClickListener { click() } }) }
         label(tr(UiText.EnvironmentTitle)).textSize=24f
+        button(tr(UiText.Updates)) { startActivity(Intent(this,UpdatesActivity::class.java)) }
         label(tr(UiText.LanguageHelp))
         status=label("")
         val engine = Engine.get(this)
         fun diagnostics(): String = buildString {
-            appendLine("Opencode-PE ${BuildConfig.VERSION_NAME}")
+            appendLine("Opencode ${BuildConfig.VERSION_NAME}")
             appendLine("${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}")
             appendLine("Android ${android.os.Build.VERSION.RELEASE} (API ${android.os.Build.VERSION.SDK_INT})")
             appendLine("ABI: ${android.os.Build.SUPPORTED_ABIS.joinToString()}")

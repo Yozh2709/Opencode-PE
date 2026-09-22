@@ -1,5 +1,12 @@
 # Opencode-PE validation notes
 
+## 0.4.13 — app identity and updates
+
+- Renamed the Android app label, native tools header and notification title to Opencode. Package ID and signing configuration are unchanged.
+- Converted the original MIT-licensed OpenCode favicon geometry into adaptive Android icon resources; the notification uses a monochrome version.
+- Added manual update checks in Settings and the native Runtime screen, plus optional daily launch checks. Only newer published releases with uploaded ARM64 APK assets from this repository are eligible, including alpha versions.
+- AppUpdatesTest passed three tests covering numeric/prerelease ordering, unordered releases, drafts, incomplete/missing assets, downgrade prevention and foreign download URLs. JavaScript syntax validation passed. No device was connected for UI verification.
+
 ## 0.4.12 — Android close_range compatibility
 
 - User trace from Tecno Spark 8C, Android 11, ARM64, kernel 4.14.199 identified `SIGSYS / SYS_SECCOMP / __NR_close_range` even for `bun --version`.
