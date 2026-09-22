@@ -32,6 +32,8 @@ node scripts/prepare-runtime.mjs C:/path/to/runtime-cache
 
 The APK is written to `app/build/outputs/apk/debug/app-debug.apk`. Runtime archives and native libraries are downloaded and verified using `runtime.lock.json`; generated payloads and local signing keys are excluded from Git.
 
+The pinned Termux package archives are also preserved as a release asset because the upstream rolling repository removes older versions. The archive and every individual package are checked against their SHA-256 hashes; this does not upgrade any bundled dependencies.
+
 ## Automated releases
 
 The **Android release** GitHub Actions workflow builds the APK on GitHub when a version tag is pushed. It runs JVM tests and Android lint, verifies the signing certificate, then publishes the APK, SHA-256 checksum, runtime manifest, and third-party notices. The release remains a draft until every file has uploaded.

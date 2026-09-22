@@ -30,23 +30,14 @@ execFileSync('tar',['-xf',coreArchive,'-C',core]);
 execFileSync(process.execPath,['scripts/extract-opencode.mjs',path.join(core,'opencode'),path.join(assets,'code')],{stdio:'inherit'});
 execFileSync(process.execPath,['scripts/extract-webui.mjs',path.join(core,'opencode'),'app/src/main/assets/web'],{stdio:'inherit'});
 for(const name of ['libtagfix.so','libopentui.so','libc++_shared.so'])fs.copyFileSync(path.join(extracted,name),path.join(out,name));
-const index=path.join(cache,'Packages');
-await download('https://packages.termux.dev/apt/termux-main/dists/stable/main/binary-aarch64/Packages',index);
-const packages=new Map(fs.readFileSync(index,'utf8').split(/\n\n/).map(block=>{
-  const fields=Object.fromEntries(block.split('\n').filter(l=>/^[A-Za-z0-9-]+: /.test(l)).map(l=>[l.slice(0,l.indexOf(':')),l.slice(l.indexOf(':')+2)]));
-  return [fields.Package,fields];
-}));
-// Only libraries and executables needed for the supported toolchain, not package managers.
-const wanted=new Map();
-function add(name){if(wanted.has(name))return;const pkg=packages.get(name);if(!pkg)throw Error('Unknown package '+name);wanted.set(name,pkg);
- for(const dep of (pkg.Depends||'').split(',').map(d=>d.trim().split(/[ (|]/)[0]).filter(Boolean))add(dep);
+// Termux removes superseded packages from its rolling repository. Preserve the
+// exact locked archives so a clean build does not silently update dependencies.
+if(lock.packageArchive){
+ const archive=path.join(cache,'termux-packages.zip');
+ await download(lock.packageArchive.url,archive,lock.packageArchive.sha256);
+ execFileSync('tar',['-xf',archive,'-C',cache]);
 }
-for(const name of ['git','ripgrep','nodejs','npm','curl'])add(name);
-if(fs.existsSync('runtime.lock.json')){
- const lock=JSON.parse(fs.readFileSync('runtime.lock.json','utf8'));
- wanted.clear();
- for(const pkg of lock.packages)wanted.set(pkg.name,{Version:pkg.version,Filename:pkg.url.replace('https://packages.termux.dev/apt/termux-main/',''),SHA256:pkg.sha256});
-}
+const wanted=new Map(lock.packages.map(pkg=>[pkg.name,{Version:pkg.version,Filename:pkg.url.replace('https://packages.termux.dev/apt/termux-main/',''),SHA256:pkg.sha256}]));
 const mapping={'bin/bun':'libbun.so'}; const sources=[];
 const payload=path.join(cache,'payload');fs.mkdirSync(payload,{recursive:true});
 for(const [name,pkg] of wanted){

@@ -229,5 +229,9 @@
       "url": "https://packages.termux.dev/apt/termux-main/pool/main/p/python-pip/python-pip_26.2.1_all.deb",
       "sha256": "92a9cb4b3c99dd20086f90fedc95c604eefc5bd0f88d1862690884474f82de44"
     }
-  ]
+  ],
+  "packageArchive": {
+    "url": "https://github.com/Yozh2709/Opencode-PE/releases/download/v0.4.11-alpha/termux-packages-20260922.zip",
+    "sha256": "83fb61f528b2967f62e13acac4f6e04a82dba2b9cf475e0bdacd4b4fb5c9705b"
+  }
 }
