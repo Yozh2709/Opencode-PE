@@ -1,5 +1,11 @@
 # Opencode-PE validation notes
 
+## GitHub Actions — 2026-09-22
+
+Clean Windows runner build [35729949591](https://github.com/Yozh2709/Opencode-PE/actions/runs/35729949591) passed: pinned runtime preparation, APK build, JVM tests, Android lint, expected signing-certificate verification, and artifact upload. No device tests were run. This manual verification run intentionally skipped release publication; publication is enabled for matching version tags.
+
+The initial run exposed two packages removed from the rolling Termux repository. All 35 original package archives were preserved in a release asset and verified against the existing lockfile hashes. Clean builds now use that archive without changing package versions.
+
 ## 0.4.5 — 2026-09-20
 
 - APK assets include npm @sigstore/protobuf-specs/dist/__generated__/envelope.js. The default underscore-directory filter was removed.
