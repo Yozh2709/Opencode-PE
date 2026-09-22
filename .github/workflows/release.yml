@@ -13,7 +13,16 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  compatibility:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reproduce seccomp failure and verify fallback
+        run: python3 scripts/test-bun-compat.py
+
   build:
+    needs: compatibility
     runs-on: windows-2025
     timeout-minutes: 60
     permissions:
@@ -98,8 +107,11 @@ jobs:
           This build uses the persistent alpha development signing key and can update compatible previous alpha installations.
 
           Built automatically from tag $tag. Build, JVM tests and Android lint passed; device regression tests are not part of this workflow.
-          Checksums, runtime provenance and third-party notices are attached.
+          Runtime provenance and third-party notices are available in the source repository and workflow artifact.
           "@
+          $changes = "releases/$env:APP_VERSION.md"
+          if (Test-Path $changes) { $body += "`n`n" + (Get-Content $changes -Raw) }
+          $body += "`n`nSHA-256:`n" + (Get-Content dist/SHA256SUMS.txt -Raw)
           $body | Set-Content release-notes.md -Encoding utf8NoBOM
           gh release view $tag --json isDraft > release-state.json 2>$null
           if ($LASTEXITCODE -eq 0) {
@@ -110,7 +122,7 @@ jobs:
             & gh @options
             if ($LASTEXITCODE -ne 0) { throw 'Could not create release draft' }
           }
-          $files = @(Get-ChildItem dist -File | ForEach-Object FullName)
+          $files = @(Get-ChildItem dist -Filter '*.apk' -File | ForEach-Object FullName)
           gh release upload $tag @files --clobber
           if ($LASTEXITCODE -ne 0) { throw 'Release upload failed; draft retained' }
           gh release edit $tag --draft=false

@@ -13,7 +13,7 @@
 
 ## Requirements and setup
 
-Android 9 or newer on ARM64. Current version: **0.4.11-alpha**. The app still uses the display name Pocket OpenCode and package ID `dev.pocketopencode`.
+Android 9 or newer on ARM64. Current version: **0.4.12-alpha**. The app still uses the display name Pocket OpenCode and package ID `dev.pocketopencode`.
 
 1. Download the ARM64 APK from [Releases](https://github.com/Yozh2709/Opencode-PE/releases), or build it using the instructions below. Public alpha APKs use the development signing key.
 2. Start with the embedded environment, or connect a compatible official Termux installation through **Settings → Runtime**. Termux needs its command permission and external-app access enabled; the setup screen guides you through this.
@@ -36,7 +36,7 @@ The pinned Termux package archives are also preserved as a release asset because
 
 ## Automated releases
 
-The **Android release** GitHub Actions workflow builds the APK on GitHub when a version tag is pushed. It runs JVM tests and Android lint, verifies the signing certificate, then publishes the APK, SHA-256 checksum, runtime manifest, and third-party notices. The release remains a draft until every file has uploaded.
+The **Android release** GitHub Actions workflow builds the APK on GitHub when a version tag is pushed. It runs the seccomp compatibility regression, JVM tests and Android lint, verifies the signing certificate, then publishes one APK with its SHA-256 checksum in the release description. The runtime manifest and notices are kept in the workflow artifact. The release remains a draft until the upload completes.
 
 To publish an update, increase `versionCode` and set `versionName` in `app/build.gradle.kts`, commit the changes, and push a matching tag (for example, `v0.4.12-alpha` for `0.4.12-alpha`). Tags containing a prerelease suffix produce a prerelease. Existing published releases are never overwritten.
 
@@ -50,7 +50,13 @@ This is an alpha. Android may stop background processes. Embedded tools are subj
 
 The local server listens on loopback and uses a random password protected by Android Keystore. Provider credentials are stored by OpenCode in the selected environment. Uninstalling the app deletes its private data; export projects first.
 
-See [validation notes](VALIDATION.md) for prior checks. The latest UI changes were built successfully; full device regression testing for 0.4.11 remains pending.
+See [validation notes](VALIDATION.md) for prior checks. The Android 11 startup compatibility change requires confirmation on the affected device.
+
+### Android startup compatibility
+
+Some Android app seccomp policies terminate Bun with SIGSYS when it calls `close_range`, including the reported Tecno Spark 8C / Android 11 device. Both backends preload a small bundled library that implements that operation using `/proc/self/fd`, `fcntl`, and `close`. Other libc syscall calls retain their normal kernel behavior; Android sandbox restrictions remain in force. Bun itself remains version 1.4.2.
+
+Startup diagnostics and a copy button are available directly on the native Runtime screen, even when the web interface cannot start. The copied report includes device details, runtime status, and the current in-memory log; review it before sharing.
 
 ## Upstream projects
 

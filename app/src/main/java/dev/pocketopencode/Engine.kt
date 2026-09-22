@@ -113,6 +113,7 @@ class Engine private constructor(val context: Context) {
             "XDG_CACHE_HOME" to File(home,".cache").absolutePath,
             "XDG_STATE_HOME" to File(home,".local/state").absolutePath,
             "LD_LIBRARY_PATH" to "$libs:${usr.absolutePath}/lib",
+            "LD_PRELOAD" to "$libs/libpocket_bun_compat.so",
             "OPENTUI_LIB_PATH" to "$libs/libopentui.so", "ANDROID_ROOT" to "/system",
             "TERMUX_VERSION" to "pocket-embedded", "OPENCODE_DISABLE_AUTOUPDATE" to "true",
             "OPENCODE_DISABLE_TUI_AUDIO" to "1", "OPENCODE_EXPERIMENTAL_DISABLE_FILEWATCHER" to "true",

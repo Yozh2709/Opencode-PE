@@ -199,6 +199,8 @@ enum class UiText(val en: String, val ru: String) {
     BinaryFile("This is a binary file", "Это двоичный файл"),
     InstallZip("Install zip: pkg install zip", "Установите zip: pkg install zip"),
     LanguageHelp("The Android interface follows the OpenCode language setting. Russian and English are available; other languages use English.", "Язык Android-части следует настройке языка OpenCode. Доступны русский и английский; для остальных языков используется английский."),
+    CopyDiagnostics("Copy startup diagnostics", "Скопировать диагностику запуска"),
+    DiagnosticsCopied("Diagnostics copied. Review before sharing.", "Диагностика скопирована. Проверьте перед отправкой."),
     TermuxStatus("OpenCode · Termux", "OpenCode · Termux");
 
     fun format(locale: String, vararg args: Any?): String =

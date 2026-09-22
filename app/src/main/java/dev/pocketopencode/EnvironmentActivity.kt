@@ -33,6 +33,27 @@ class EnvironmentActivity: ComponentActivity() {
         label(tr(UiText.EnvironmentTitle)).textSize=24f
         label(tr(UiText.LanguageHelp))
         status=label("")
+        val engine = Engine.get(this)
+        fun diagnostics(): String = buildString {
+            appendLine("Opencode-PE ${BuildConfig.VERSION_NAME}")
+            appendLine("${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}")
+            appendLine("Android ${android.os.Build.VERSION.RELEASE} (API ${android.os.Build.VERSION.SDK_INT})")
+            appendLine("ABI: ${android.os.Build.SUPPORTED_ABIS.joinToString()}")
+            appendLine("Kernel: ${System.getProperty("os.version")}")
+            appendLine("Backend: ${if(engine.status.value.termux) "Termux" else "Embedded"}")
+            appendLine(engine.status.value.error ?: engine.status.value.phase)
+            append(engine.logs.value)
+        }
+        button(tr(UiText.CopyDiagnostics)) {
+            getSystemService(ClipboardManager::class.java).setPrimaryClip(ClipData.newPlainText("OpenCode diagnostics",diagnostics()))
+            Toast.makeText(this,tr(UiText.DiagnosticsCopied),Toast.LENGTH_SHORT).show()
+        }
+        val logPanel = label("").apply { setTextIsSelectable(true); textSize=12f; typeface=android.graphics.Typeface.MONOSPACE }
+        content.removeView(logPanel)
+        content.addView(ScrollView(this).apply { addView(logPanel) }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,(180 * resources.displayMetrics.density).toInt()))
+        lifecycleScope.launch {
+            combine(engine.status, engine.logs) { _, _ -> diagnostics() }.collect { logPanel.text = it }
+        }
         label(tr(UiText.AutomaticHelp))
         val prefs=getSharedPreferences("engine",0)
         val modes=RadioGroup(this)

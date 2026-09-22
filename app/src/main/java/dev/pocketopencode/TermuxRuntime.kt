@@ -53,7 +53,7 @@ class LocalTransfer(private val routes: Map<String, (OutputStream) -> Unit>, pri
 class TermuxRuntime(private val context: Context, private val port: Int, private val password: String, private val phase: (UiText)->Unit = {}): Closeable {
     companion object {
         // UI-only APK updates reuse the same payload. Bump this when core/Bun assets change.
-        val ROOT = "${TermuxBridge.HOME}/.local/share/pocket-opencode/runtime-1.18.31-1"
+        val ROOT = "${TermuxBridge.HOME}/.local/share/pocket-opencode/runtime-1.18.31-2"
     }
     private var transfer: LocalTransfer? = null
     suspend fun run(): String {
@@ -109,6 +109,7 @@ class TermuxRuntime(private val context: Context, private val port: Int, private
             export HOME=${q(TermuxBridge.HOME)} PREFIX=${q(TermuxBridge.PREFIX)}
             export PATH="${'$'}PREFIX/bin:/system/bin" SHELL="${'$'}PREFIX/bin/bash"
             export LD_LIBRARY_PATH=${q(ROOT)}:"${'$'}PREFIX/lib"
+            export LD_PRELOAD=${q("$ROOT/libpocket_bun_compat.so")}${'$'}{LD_PRELOAD:+:${'$'}LD_PRELOAD}
             export OPENCODE_SERVER_PASSWORD=${q(password)}
             export OPENCODE_BUN_PATH=${q("$ROOT/bun")} OPENTUI_LIB_PATH=${q("$ROOT/libopentui.so")}
             export OPENCODE_DISABLE_AUTOUPDATE=true OPENCODE_DISABLE_DEFAULT_PLUGINS=false
@@ -138,7 +139,7 @@ class TermuxRuntime(private val context: Context, private val port: Int, private
             zip.closeEntry()
         }
         assets("runtime/code","code")
-        for((source,name) in listOf("libbun.so" to "bun","libopentui.so" to "libopentui.so","libc++_shared.so" to "libc++_shared.so","libtagfix.so" to "libtagfix.so")) {
+        for((source,name) in listOf("libbun.so" to "bun","libpocket_bun_compat.so" to "libpocket_bun_compat.so","libopentui.so" to "libopentui.so","libc++_shared.so" to "libc++_shared.so","libtagfix.so" to "libtagfix.so")) {
             zip.putNextEntry(ZipEntry(name)); File(context.applicationInfo.nativeLibraryDir,source).inputStream().use { it.copyTo(zip) }; zip.closeEntry()
         }
         zip.finish()

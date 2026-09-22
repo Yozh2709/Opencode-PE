@@ -1,5 +1,13 @@
 # Opencode-PE validation notes
 
+## 0.4.12 — Android close_range compatibility
+
+- User trace from Tecno Spark 8C, Android 11, ARM64, kernel 4.14.199 identified `SIGSYS / SYS_SECCOMP / __NR_close_range` even for `bun --version`.
+- The pinned Android Bun imports `syscall@LIBC`. A bundled preload library implements close_range through fd enumeration and close/fcntl, forwarding all other syscall arguments and kernel errors unchanged. Unsupported UNSHARE returns ENOSYS rather than pretending to succeed. No seccomp policy is disabled.
+- `python3 scripts/test-bun-compat.py` passed on Linux: the baseline is killed by an actual seccomp TRAP; the preloaded implementation passes fd bounds, CLOEXEC, closing, invalid flags/ranges, unsupported unsharing, six-argument mmap forwarding, errno, and fork/exec checks.
+- Android ARM64 native build with NDK r29 passed. APK build, JVM tests and Android lint passed. No Android device was connected; confirmation of the actual Bun launch on the affected phone remains pending.
+- Diagnostics are now readable/copyable from the native Runtime screen before the web interface starts. The Termux runtime directory revision is incremented so existing installations receive the compatibility library.
+
 ## GitHub Actions — 2026-09-22
 
 Clean Windows runner build [35729949591](https://github.com/Yozh2709/Opencode-PE/actions/runs/35729949591) passed: pinned runtime preparation, APK build, JVM tests, Android lint, expected signing-certificate verification, and artifact upload. No device tests were run. This manual verification run intentionally skipped release publication; publication is enabled for matching version tags.
