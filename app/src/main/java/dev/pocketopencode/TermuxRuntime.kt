@@ -50,7 +50,7 @@ class LocalTransfer(private val routes: Map<String, (OutputStream) -> Unit>, pri
     override fun close() { socket.close(); current?.close() }
 }
 
-class TermuxRuntime(private val context: Context, private val port: Int, private val password: String, private val phase: (UiText)->Unit = {}): Closeable {
+class TermuxRuntime(private val context: Context, private val port: Int, private val password: String, private val config: String? = null, private val phase: (UiText)->Unit = {}): Closeable {
     companion object {
         // UI-only APK updates reuse the same payload. Bump this when core/Bun assets change.
         val ROOT = "${TermuxBridge.HOME}/.local/share/pocket-opencode/runtime-1.18.31-2"
@@ -114,6 +114,7 @@ class TermuxRuntime(private val context: Context, private val port: Int, private
             export OPENCODE_BUN_PATH=${q("$ROOT/bun")} OPENTUI_LIB_PATH=${q("$ROOT/libopentui.so")}
             export OPENCODE_DISABLE_AUTOUPDATE=true OPENCODE_DISABLE_DEFAULT_PLUGINS=false
             export OPENCODE_DISABLE_FFF=true OPENCODE_EXPERIMENTAL_DISABLE_FILEWATCHER=true OPENCODE_DISABLE_TUI_AUDIO=1
+            ${if(config!=null) "export OPENCODE_CONFIG_CONTENT=${q(config)}" else ""}
             cd "${'$'}HOME"
             ${q("$ROOT/bun")} --no-install ${q("$ROOT/code/src/index.js")} serve --hostname 127.0.0.1 --port $port &
             child=${'$'}!

@@ -1,0 +1,4 @@
+<resources>
+    <string name="phone_control_label">Opencode phone control</string>
+    <string name="phone_control_description">Lets the OpenCode agent running in this app read the screen, take screenshots, tap, swipe, type and open apps when you ask it to. Nothing leaves the device except what the agent sends to your AI provider.</string>
+</resources>

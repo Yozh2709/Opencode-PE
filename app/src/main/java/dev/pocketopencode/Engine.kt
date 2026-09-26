@@ -158,8 +158,9 @@ class Engine private constructor(val context: Context) {
                 mutableStatus.value = EngineStatus(UiText.Starting)
                 val binary = File(context.applicationInfo.nativeLibraryDir,"libbun.so")
                 val entry = File(context.filesDir,"code/src/index.js")
+                val phone = phoneConfig()
                 val p = builder(listOf(binary.absolutePath,"--no-install",entry.absolutePath,"serve","--hostname","127.0.0.1","--port",port.toString()),home)
-                    .apply { environment()["OPENCODE_SERVER_PASSWORD"] = password }.start()
+                    .apply { environment()["OPENCODE_SERVER_PASSWORD"] = password; if(phone!=null) environment()["OPENCODE_CONFIG_CONTENT"] = phone }.start()
                 synchronized(this@Engine) {
                     if (generation != run) { p.destroyForcibly(); return@launch }
                     process = p
@@ -202,7 +203,7 @@ class Engine private constructor(val context: Context) {
         val port = try { ServerSocket(saved).use { it.localPort } } catch(_: java.io.IOException) { ServerSocket(0).use { it.localPort } }
         preferences.edit().putInt("termux-port",port).apply()
         val client = OpenCodeApi("http://127.0.0.1:$port",password)
-        val runtime = TermuxRuntime(context,port,password) { phase ->
+        val runtime = TermuxRuntime(context,port,password,phoneConfig()) { phase ->
             synchronized(this@Engine) { if(generation==run) mutableStatus.value=EngineStatus(phase,termux=true) }
         }
         synchronized(this@Engine) { if(generation != run) return@coroutineScope; termuxRuntime = runtime }
@@ -229,6 +230,9 @@ class Engine private constructor(val context: Context) {
             synchronized(this@Engine) { if(termuxRuntime === runtime) termuxRuntime = null }
         }
     }
+    /** Registers the phone-control MCP endpoint with the core; OpenCode still starts if it cannot be opened. */
+    private fun phoneConfig(): String? = try { PhoneMcp.config(context) }
+        catch (e: Exception) { log("Phone control unavailable: ${e.message}"); null }
     suspend fun attach(port: Int, password: String) {
         require(port in 1024..65535) { tr(UiText.PortRange) }
         check(process?.isAlive != true) { tr(UiText.StopEmbeddedFirst) }

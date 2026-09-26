@@ -219,7 +219,12 @@ enum class UiText(val en: String, val ru: String) {
     UpdateLater("Later", "Позже"),
     UpdateCheckFailed("Could not check for updates. Check your connection and try again later.", "Не удалось проверить обновления. Проверьте подключение и повторите позже."),
     DiagnosticsCopied("Diagnostics copied. Review before sharing.", "Диагностика скопирована. Проверьте перед отправкой."),
-    TermuxStatus("OpenCode · Termux", "OpenCode · Termux");
+    TermuxStatus("OpenCode · Termux", "OpenCode · Termux"),
+    PhoneControlTitle("Phone control", "Управление телефоном"),
+    PhoneControlOn("On: the agent can read the screen, tap, type and open apps. Actions follow your OpenCode permission settings.", "Включено: агент видит экран, нажимает, вводит текст и открывает приложения. Действия подчиняются настройкам разрешений OpenCode."),
+    PhoneControlOff("Off. Turn on “Opencode phone control” in Accessibility settings.", "Выключено. Включите «Opencode: управление телефоном» в настройках специальных возможностей."),
+    PhoneControlHelp("If Android says the setting is restricted: App info → ⋮ → Allow restricted settings, then try again.", "Если Android пишет, что настройка ограничена: «О приложении» → ⋮ → «Разрешить ограниченные настройки», затем повторите."),
+    PhoneControlSettings("Open accessibility settings", "Открыть специальные возможности");
 
     fun format(locale: String, vararg args: Any?): String =
         String.format(Locale.ROOT, if (nativeLanguage(locale) == "ru") ru else en, *args)

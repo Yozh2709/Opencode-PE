@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.combine
 
 class EnvironmentActivity: ComponentActivity() {
     private lateinit var status: TextView
+    private lateinit var phoneStatus: TextView
     private var renderedLanguage=""
     private val permission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         if(granted) restart() else {
@@ -32,6 +33,10 @@ class EnvironmentActivity: ComponentActivity() {
         fun button(text: String, click: () -> Unit) { content.addView(Button(this).apply { this.text=text; setOnClickListener { click() } }) }
         label(tr(UiText.EnvironmentTitle)).textSize=24f
         button(tr(UiText.Updates)) { startActivity(Intent(this,UpdatesActivity::class.java)) }
+        label(tr(UiText.PhoneControlTitle)).textSize=20f
+        phoneStatus=label("")
+        button(tr(UiText.PhoneControlSettings)) { startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)) }
+        label(tr(UiText.PhoneControlHelp)).textSize=13f
         label(tr(UiText.LanguageHelp))
         status=label("")
         val engine = Engine.get(this)
@@ -97,6 +102,7 @@ class EnvironmentActivity: ComponentActivity() {
     override fun onResume() {
         super.onResume()
         if(renderedLanguage!=nativeLanguage(NativeLanguage.locale.value)) recreate()
+        phoneStatus.text=tr(if(PhoneControlService.enabled(this)) UiText.PhoneControlOn else UiText.PhoneControlOff)
     }
     private fun restart() { Engine.get(this).stop(); startForegroundService(Intent(this,EngineService::class.java)) }
 }

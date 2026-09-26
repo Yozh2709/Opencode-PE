@@ -93,5 +93,11 @@
       },200);
     }
   };
-  new MutationObserver(settingsLinks).observe(document.documentElement,{childList:true,subtree:true});
+  // Streaming replies mutate the DOM constantly; check at most once per frame.
+  let queued = false;
+  new MutationObserver(() => {
+    if(queued) return;
+    queued = true;
+    requestAnimationFrame(() => { queued = false; settingsLinks(); });
+  }).observe(document.documentElement,{childList:true,subtree:true});
 })();

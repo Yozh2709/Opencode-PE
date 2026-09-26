@@ -34,6 +34,8 @@ class MainActivity : ComponentActivity() {
     private lateinit var newChat: Button
     private var creatingChat = false
     private var needsResumeSync = false
+    private var stoppedAt = 0L
+    private companion object { const val RESYNC_AFTER_MS = 10 * 60_000L }
     private var permissionReply: ((String, String) -> Unit)? = null
     private var upload: ValueCallback<Array<Uri>>? = null
     private val notification = registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
@@ -136,7 +138,7 @@ class MainActivity : ComponentActivity() {
             webChromeClient=object:WebChromeClient() {
                 override fun onShowFileChooser(view:WebView,callback:ValueCallback<Array<Uri>>,params:FileChooserParams):Boolean {
                     upload?.onReceiveValue(null);upload=callback
-                    return try{filePicker.launch(params.createIntent());true}catch(_:Exception){upload=null;callback.onReceiveValue(null);false}
+                    return try{filePicker.launch(params.createIntent());true}catch(_:Exception){upload=null;callback.onReceiveValue(null);true}
                 }
                 override fun onConsoleMessage(message:ConsoleMessage):Boolean {
                     if(message.messageLevel()==ConsoleMessage.MessageLevel.ERROR)android.util.Log.e("PocketWeb",message.message().take(500))
@@ -263,7 +265,11 @@ class MainActivity : ComponentActivity() {
                     if(engine.api!==api)return@launch
                     intent.putExtra("project",directory)
                     val slug=android.util.Base64.encodeToString(directory.toByteArray(),android.util.Base64.URL_SAFE or android.util.Base64.NO_WRAP or android.util.Base64.NO_PADDING)
-                    web.loadUrl(api.webUrl.replace("/?auth_token=","/$slug/session/$id?auth_token="))
+                    // Route inside the running SPA: a page load would refetch providers, config and sessions from scratch.
+                    val path=JSONObject.quote("/$slug/session/$id")
+                    web.evaluateJavascript("location.origin===${JSONObject.quote(api.webOrigin)}&&(history.pushState(null,'',$path),dispatchEvent(new PopStateEvent('popstate')),true)") { routed ->
+                        if(routed!="true" && engine.api===api)web.loadUrl(api.webUrl.replace("/?auth_token=","/$slug/session/$id?auth_token="))
+                    }
                 } catch(e:kotlinx.coroutines.CancellationException){throw e}
                 catch(e:Exception){Toast.makeText(this@MainActivity,tr(UiText.NewChatFailed, e.message),Toast.LENGTH_LONG).show()}
                 finally { creatingChat=false; newChat.isEnabled=engine.status.value.ready }
@@ -290,7 +296,9 @@ class MainActivity : ComponentActivity() {
     override fun onNewIntent(intent:Intent){
         super.onNewIntent(intent);setIntent(intent)
         needsResumeSync=false
-        Engine.get(this).api?.let { origin=it.webOrigin;loaded=it.webUrl;openProject(it,intent.getStringExtra("project")) }
+        // Launcher and notification taps only bring the existing page back.
+        val project=intent.getStringExtra("project")?:return
+        Engine.get(this).api?.let { origin=it.webOrigin;loaded=it.webUrl;openProject(it,project) }
     }
     override fun onResume() {
         super.onResume()
@@ -325,8 +333,16 @@ class MainActivity : ComponentActivity() {
             web.loadUrl(refreshed.toString())
         }
     }
+    override fun onStart() {
+        super.onStart()
+        // The process and its loopback event stream survive short trips away, and upstream
+        // resyncs on reconnect; only a long absence is worth a full page reload.
+        if(android.os.SystemClock.elapsedRealtime()-stoppedAt<RESYNC_AFTER_MS)needsResumeSync=false
+    }
     override fun onStop() {
-        needsResumeSync=loaded.isNotBlank()
+        // Returning from our own file chooser must not reload the page: it would drop the picked attachment.
+        needsResumeSync=loaded.isNotBlank() && upload==null
+        stoppedAt=android.os.SystemClock.elapsedRealtime()
         super.onStop()
     }
     override fun onPause() {
