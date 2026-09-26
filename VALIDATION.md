@@ -81,3 +81,10 @@ Early builds were debug-signed APKs for manual installation. Native extensions, 
 - Installation uses Android's installer and a private FileProvider URI after checking APK size, available GitHub SHA-256 digest, package ID, newer version and matching signing certificate.
 - APK build, 13 JVM tests and Android lint passed. UpdateDownloadTest passed on realme C75: real DownloadManager transfer from a local fixture, progress completion, controller recreation, invalid APK rejection and cancellation cleanup. No model calls.
 - Installed the same-signed 0.4.14-alpha APK over the existing app. End-to-end installation of a future production release through the new UI remains to be verified when one is available.
+
+## 0.5.0 — 2026-09-26
+
+- Phone control on realme C75 (Android 15, Termux mode, Muse Spark 1.3): the agent opened Settings and found the Android version using the accessibility tree, and opened Brawl Stars and its Brawlers screen using screenshots only.
+- Image attachment survives returning from the file chooser (verified on device).
+- Single MainActivity, no reload on short resume and in-app New chat navigation: APK built and installed; the timing improvement has not yet been measured on device after the change.
+- APK build, JVM tests and Android lint passed.

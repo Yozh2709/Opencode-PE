@@ -13,7 +13,7 @@
 
 ## Requirements and setup
 
-Android 9 or newer on ARM64. Current version: **0.4.14-alpha**. The installed app is named **Opencode**, with the original OpenCode icon. The repository remains **Opencode-PE** and the package ID remains `dev.pocketopencode` for update compatibility.
+Android 9 or newer on ARM64. Current version: **0.5.0**. The installed app is named **Opencode**, with the original OpenCode icon. The repository remains **Opencode-PE** and the package ID remains `dev.pocketopencode` for update compatibility.
 
 1. Download the ARM64 APK from [Releases](https://github.com/Yozh2709/Opencode-PE/releases), or build it using the instructions below. Public alpha APKs use the development signing key.
 2. Start with the embedded environment, or connect a compatible official Termux installation through **Settings → Runtime**. Termux needs its command permission and external-app access enabled; the setup screen guides you through this.

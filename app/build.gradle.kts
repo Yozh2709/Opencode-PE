@@ -6,8 +6,8 @@ android {
         applicationId = "dev.pocketopencode"
         minSdk = 28
         targetSdk = 35
-        versionCode = 23
-        versionName = "0.4.14-alpha"
+        versionCode = 24
+        versionName = "0.5.0"
         ndk { abiFilters += "arm64-v8a" }
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
